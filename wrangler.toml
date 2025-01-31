@@ -1,8 +1,8 @@
-name = "awwbot"
+name = "petie"
 main = "./src/server.js"
 compatibility_date="2023-05-18"
 
-# [secrets]
-# DISCORD_TOKEN
-# DISCORD_PUBLIC_KEY
-# DISCORD_APPLICATION_ID
+[secrets]
+DISCORD_TOKEN = ""
+DISCORD_PUBLIC_KEY = "e7eeb6c77eb0fdb1d2bd4df14b9d932d50e55d85258ce183a0cede3f99931838"
+DISCORD_APPLICATION_ID = "1309067211666620476"
