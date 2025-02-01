@@ -22,7 +22,6 @@ class JsonResponse extends Response {
 
 const router = AutoRouter();
 
-// Scheduled handler for cron events
 export async function scheduled(event, env, ctx) {
   console.log("Scheduled function triggered");
 }
@@ -107,4 +106,7 @@ async function verifyDiscordRequest(request, env) {
 const server = {
   verifyDiscordRequest,
   fetch: router.fetch,
+  scheduled,
 };
+
+export default server;
