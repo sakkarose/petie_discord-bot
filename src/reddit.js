@@ -1,15 +1,21 @@
+// In reddit.js
+
 const subreddits = [
   'https://www.reddit.com/r/aww/hot.json',
   'https://www.reddit.com/r/rarepuppers/hot.json',
   // Add more subreddit URLs here if needed
 ];
 
-export async function getCuteUrl(subredditUrl) {
-  const response = await fetch(subredditUrl, {
+export async function getCuteUrl() {
+  const randomSubredditIndex = Math.floor(Math.random() * subreddits.length);
+  const randomSubredditUrl = subreddits[randomSubredditIndex];
+
+  const response = await fetch(randomSubredditUrl, {
     headers: {
       'User-Agent': 'justinbeckwith:awwbot:v1.0.0 (by /u/justinblat)',
     },
   });
+
   if (!response.ok) {
     let errorText = `Error fetching ${response.url}: ${response.status} ${response.statusText}`;
     try {
@@ -22,6 +28,7 @@ export async function getCuteUrl(subredditUrl) {
     }
     throw new Error(errorText);
   }
+
   const data = await response.json();
   const posts = data.data.children
   .map((post) => {
@@ -35,7 +42,8 @@ export async function getCuteUrl(subredditUrl) {
       );
     })
   .filter((post) =>!!post);
-  const randomIndex = Math.floor(Math.random() * posts.length);
-  const randomPost = posts[randomIndex];
+
+  const randomPostIndex = Math.floor(Math.random() * posts.length);
+  const randomPost = posts[randomPostIndex];
   return randomPost;
 }
