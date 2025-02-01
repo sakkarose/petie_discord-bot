@@ -1,11 +1,11 @@
-/**
- * Reach out to the reddit API, and get the first page of results from
- * r/aww. Filter out posts without readily available images or videos,
- * and return a random result.
- * @returns The url of an image or video which is cute.
- */
-export async function getCuteUrl() {
-  const response = await fetch(redditUrl, {
+const subreddits = [
+  'https://www.reddit.com/r/aww/hot.json',
+  'https://www.reddit.com/r/rarepuppers/hot.json',
+  // Add more subreddit URLs here if needed
+];
+
+export async function getCuteUrl(subredditUrl) {
+  const response = await fetch(subredditUrl, {
     headers: {
       'User-Agent': 'justinbeckwith:awwbot:v1.0.0 (by /u/justinblat)',
     },
@@ -24,7 +24,7 @@ export async function getCuteUrl() {
   }
   const data = await response.json();
   const posts = data.data.children
-    .map((post) => {
+  .map((post) => {
       if (post.is_gallery) {
         return '';
       }
@@ -34,10 +34,8 @@ export async function getCuteUrl() {
         post.data?.url
       );
     })
-    .filter((post) => !!post);
+  .filter((post) =>!!post);
   const randomIndex = Math.floor(Math.random() * posts.length);
   const randomPost = posts[randomIndex];
   return randomPost;
 }
-
-export const redditUrl = 'https://www.reddit.com/r/aww/hot.json';
