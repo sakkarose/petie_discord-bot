@@ -1,3 +1,6 @@
-Based on Discord's Cloudflare Workers example.
+Based on Discord's Cloudflare Workers example with additional updates.
 
-I will provide more information about this bot later.
+Additional features:
+- Updated wrangler to support **Workers Logs**.
+- Setup schedule to automatically fetch image and send it to **DISCORD_CHANNEL_ID** with a cron trigger.
+- Support multiple subreddit sources (Will be picked randomly).
