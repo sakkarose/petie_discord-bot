@@ -108,5 +108,3 @@ const server = {
   verifyDiscordRequest,
   fetch: router.fetch,
 };
-
-export default server;
