@@ -1,3 +1,7 @@
+/**
+ * The core server that runs on a Cloudflare worker.
+ */
+
 import { AutoRouter } from 'itty-router';
 import {
   InteractionResponseType,
@@ -25,31 +29,8 @@ const router = AutoRouter();
 /**
  * A simple :wave: hello page to verify the worker is working.
  */
-router.get('/cron', async (request, env) => {
-  // This route will be triggered by the Cron Trigger
-  const cuteUrl = await getCuteUrl();
-
-  // Send the cute URL to the desired Discord channel
-  const channelId = env.DISCORD_CHANNEL_ID; // Store your channel ID in an environment variable
-  const response = await fetch(
-    `https://discord.com/api/v10/channels/${channelId}/messages`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bot ${env.DISCORD_TOKEN}`,
-      },
-      body: JSON.stringify({
-        content: cuteUrl,
-      }),
-    },
-  );
-
-  if (response.ok) {
-    return new Response('Cute URL sent to Discord!');
-  } else {
-    return new Response('Error sending cute URL to Discord.', { status: 500 });
-  }
+router.get('/', (request, env) => {
+  return new Response(`👋 ${env.DISCORD_APPLICATION_ID}`);
 });
 
 /**
@@ -64,6 +45,35 @@ router.post('/', async (request, env) => {
   );
   if (!isValid || !interaction) {
     return new Response('Bad request signature.', { status: 401 });
+  }
+
+  if (interaction.type === InteractionType.APPLICATION_COMMAND_AUTOCOMPLETE) {
+    const { scheduledTime } = interaction;
+    console.log("scheduledTime:", scheduledTime);
+    if (scheduledTime) {
+      // This is a scheduled cron trigger, send the awwww command
+      const cuteUrl = await getCuteUrl();
+      const channelId = env.DISCORD_CHANNEL_ID; // Make sure this env var is set
+      const response = await fetch(
+        `https://discord.com/api/v10/channels/${channelId}/messages`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bot ${env.DISCORD_TOKEN}`,
+          },
+          body: JSON.stringify({
+            content: cuteUrl,
+          }),
+        },
+      );
+ 
+      if (response.ok) {
+        return new Response('Cute URL sent to Discord!');
+      } else {
+        return new Response('Error sending cute URL to Discord.', { status: 500 });
+      }
+    }
   }
 
   if (interaction.type === InteractionType.PING) {
