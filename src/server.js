@@ -1,7 +1,3 @@
-/**
- * The core server that runs on a Cloudflare worker.
- */
-
 import { AutoRouter } from 'itty-router';
 import {
   InteractionResponseType,
@@ -29,8 +25,31 @@ const router = AutoRouter();
 /**
  * A simple :wave: hello page to verify the worker is working.
  */
-router.get('/', (request, env) => {
-  return new Response(`👋 ${env.DISCORD_APPLICATION_ID}`);
+router.get('/cron', async (request, env) => {
+  // This route will be triggered by the Cron Trigger
+  const cuteUrl = await getCuteUrl();
+
+  // Send the cute URL to the desired Discord channel
+  const channelId = env.DISCORD_CHANNEL_ID; // Store your channel ID in an environment variable
+  const response = await fetch(
+    `https://discord.com/api/v10/channels/${channelId}/messages`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bot ${env.DISCORD_TOKEN}`,
+      },
+      body: JSON.stringify({
+        content: cuteUrl,
+      }),
+    },
+  );
+
+  if (response.ok) {
+    return new Response('Cute URL sent to Discord!');
+  } else {
+    return new Response('Error sending cute URL to Discord.', { status: 500 });
+  }
 });
 
 /**
