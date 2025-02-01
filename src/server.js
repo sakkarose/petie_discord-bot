@@ -24,6 +24,7 @@ const router = AutoRouter();
 
 // Scheduled handler for cron events
 export async function scheduled(event, env, ctx) {
+  console.log("Scheduled function started");
   const cuteUrl = await getCuteUrl(); // No need to pass env here
   const channelId = env.DISCORD_CHANNEL_ID;
   const response = await fetch(
@@ -43,6 +44,7 @@ export async function scheduled(event, env, ctx) {
   if (!response.ok) {
     console.error('Error sending cute URL to Discord:', await response.text());
   }
+  console.log("Scheduled function completed");
 }
 
 /**
