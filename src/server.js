@@ -23,7 +23,25 @@ class JsonResponse extends Response {
 const router = AutoRouter();
 
 export async function scheduled(event, env, ctx) {
-  console.log("Scheduled function triggered");
+  const cuteUrl = await getCuteUrl();
+  const channelId = env.DISCORD_CHANNEL_ID;
+  const response = await fetch(
+    `https://discord.com/api/v10/channels/${channelId}/messages`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bot ${env.DISCORD_TOKEN}`,
+      },
+      body: JSON.stringify({
+        content: cuteUrl,
+      }),
+    },
+  );
+
+  if (!response.ok) {
+    console.error('Error sending cute URL to Discord:', await response.text());
+  }
 }
 
 /**
